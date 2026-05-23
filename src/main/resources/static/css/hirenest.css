@@ -1,0 +1,251 @@
+/* ================================
+   HireNest - Global Styles
+   Where Careers Begin
+================================ */
+
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* CSS Variables - Brand Colors */
+:root {
+    --primary: #6C63FF;
+    --primary-dark: #4B44CC;
+    --primary-light: #F0EFFE;
+    --dark: #1A1A2E;
+    --text-grey: #6C757D;
+    --white: #FFFFFF;
+    --success: #28A745;
+    --danger: #DC3545;
+    --border: #E9ECEF;
+    --shadow: 0 10px 40px rgba(108, 99, 255, 0.15);
+    --shadow-hover: 0 20px 60px rgba(108, 99, 255, 0.25);
+}
+
+/* Global */
+* {
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: #F8F9FF;
+    color: var(--dark);
+}
+
+/* Brand Colors Override for Bootstrap */
+.btn-primary {
+    background: var(--primary);
+    border-color: var(--primary);
+    font-weight: 600;
+    padding: 10px 25px;
+    border-radius: 10px;
+    transition: all 0.3s;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+}
+
+.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+    font-weight: 600;
+    padding: 10px 25px;
+    border-radius: 10px;
+    transition: all 0.3s;
+}
+
+.btn-outline-primary:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    transform: translateY(-1px);
+}
+
+/* Logo Styling */
+.hirenest-logo {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--dark);
+    text-decoration: none;
+    letter-spacing: -0.5px;
+}
+
+.hirenest-logo span {
+    color: var(--primary);
+}
+
+.hirenest-logo:hover {
+    text-decoration: none;
+    color: var(--dark);
+}
+
+/* Tagline */
+.hirenest-tagline {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--text-grey);
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+/* Cards */
+.hirenest-card {
+    background: var(--white);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    transition: all 0.3s;
+}
+
+.hirenest-card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-3px);
+}
+
+/* Form Inputs */
+.form-control, .form-select {
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 15px;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+}
+
+.form-label {
+    font-weight: 600;
+    font-size: 14px;
+    color: #444;
+    margin-bottom: 6px;
+}
+
+/* Navbar */
+.hirenest-navbar {
+    background: var(--white);
+    box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+    padding: 15px 0;
+}
+
+/* Badge */
+.badge-primary {
+    background: var(--primary-light);
+    color: var(--primary);
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+/* Section Title */
+.section-title {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--dark);
+    line-height: 1.2;
+}
+
+.section-subtitle {
+    font-size: 16px;
+    color: var(--text-grey);
+    line-height: 1.6;
+}
+
+/* Auth Pages */
+.auth-wrapper {
+    min-height: 100vh;
+    background: linear-gradient(135deg, 
+        #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 15px;
+}
+
+.auth-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 45px 40px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.2);
+}
+
+/* Alert Messages */
+.alert {
+    border-radius: 10px;
+    font-size: 14px;
+    border: none;
+    padding: 12px 16px;
+}
+
+/* Divider */
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 20px 0;
+    color: var(--text-grey);
+    font-size: 13px;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+/* Role Selection Cards */
+.role-card {
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.role-card:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+
+.role-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+}
+
+.role-card.selected {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+
+.role-card .role-icon {
+    font-size: 30px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.role-card .role-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--dark);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .auth-card {
+        padding: 30px 25px;
+    }
+    .section-title {
+        font-size: 28px;
+    }
+}
