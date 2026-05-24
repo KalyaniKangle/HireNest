@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>Company Profile - HireNest</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link th:href="@{/css/hirenest.css}" rel="stylesheet">
+    <style>
+        body {
+            background: #F8F9FF;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg,
+                #1A1A2E, #0F3460);
+            padding: 40px 0;
+            margin-bottom: 30px;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #E9ECEF;
+            box-shadow: 0 4px 20px
+                rgba(108,99,255,0.08);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .section-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #6C63FF;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #F0EFFE;
+        }
+
+        .company-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg,
+                #6C63FF, #764ba2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            font-weight: 700;
+        }
+
+        .approval-badge-pending {
+            background: rgba(255,193,7,0.2);
+            color: #856404;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .approval-badge-approved {
+            background: rgba(40,167,69,0.15);
+            color: #155724;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="hirenest-navbar">
+    <div class="container">
+        <div class="d-flex justify-content-between
+                    align-items-center">
+            <a href="/" class="hirenest-logo">
+                Hire<span>Nest</span>
+            </a>
+            <div class="d-flex align-items-center
+                        gap-3">
+                <a href="/employer/dashboard"
+                   class="text-decoration-none"
+                   style="font-size:14px;
+                           font-weight:600;
+                           color:#6C757D;">
+                    <i class="bi bi-grid me-1"></i>
+                    Dashboard
+                </a>
+                <a href="/logout"
+                   class="btn btn-outline-primary
+                          btn-sm">
+                    <i class="bi bi-box-arrow-right
+                              me-1"></i>
+                    Logout
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <div class="d-flex align-items-center gap-4">
+            <div class="company-avatar">
+                🏢
+            </div>
+            <div>
+                <h2 style="color:white;
+                            font-weight:800;
+                            margin:0;"
+                    th:text="${profile.companyName
+                               != null and
+                               !#strings.isEmpty(
+                               profile.companyName)
+                               ? profile.companyName
+                               : 'Your Company'}">
+                    Your Company
+                </h2>
+                <p style="color:rgba(255,255,255,0.6);
+                           margin:4px 0;
+                           font-size:14px;"
+                   th:text="${user.email}">
+                    employer@company.com
+                </p>
+                <!-- Approval Status -->
+                <span class="approval-badge-approved"
+                      th:if="${profile.approved}">
+                    ✅ Approved — Can Post Jobs
+                </span>
+                <span class="approval-badge-pending"
+                      th:unless="${profile.approved}">
+                    ⏳ Pending Admin Approval
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container pb-5">
+
+    <!-- Success Message -->
+    <div class="alert alert-success
+                d-flex align-items-center gap-2"
+         th:if="${param.saved}"
+         style="border-radius:12px;
+                border:none;
+                background:#E8F5E9;">
+        <i class="bi bi-check-circle-fill
+                  text-success"></i>
+        <span>Company profile saved successfully!
+            Waiting for admin approval.</span>
+    </div>
+
+    <!-- Pending Approval Notice -->
+    <div th:unless="${profile.approved}"
+         style="background:#FFF8E1;
+                border-radius:12px;
+                padding:15px 20px;
+                margin-bottom:20px;
+                border-left:4px solid #FFC107;
+                display:flex;
+                align-items:center;
+                gap:12px;">
+        <i class="bi bi-exclamation-triangle-fill"
+           style="color:#FFC107; font-size:20px;"></i>
+        <div>
+            <div style="font-weight:700;
+                         font-size:14px;
+                         color:#1A1A2E;">
+                Account Pending Approval
+            </div>
+            <div style="font-size:13px;
+                         color:#6C757D;">
+                Complete your company profile and
+                wait for admin to approve your account
+                before you can post jobs.
+            </div>
+        </div>
+    </div>
+
+    <form th:action="@{/employer/profile}"
+          th:object="${profile}"
+          method="post">
+
+        <div class="row g-4">
+
+            <!-- Left Column -->
+            <div class="col-lg-8">
+
+                <!-- Company Information -->
+                <div class="profile-card">
+                    <div class="section-label">
+                        <i class="bi bi-building me-2"></i>
+                        Company Information
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Company Name
+                                <span style="color:red;">
+                                    *
+                                </span>
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   th:field="*{companyName}"
+                                   placeholder="Enter company name"/>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Industry
+                            </label>
+                            <select class="form-select"
+                                    th:field="*{industry}">
+                                <option value="">
+                                    Select Industry
+                                </option>
+                                <option value="Information Technology">
+                                    Information Technology
+                                </option>
+                                <option value="Healthcare">
+                                    Healthcare
+                                </option>
+                                <option value="Finance">
+                                    Finance
+                                </option>
+                                <option value="Education">
+                                    Education
+                                </option>
+                                <option value="Manufacturing">
+                                    Manufacturing
+                                </option>
+                                <option value="Retail">
+                                    Retail
+                                </option>
+                                <option value="Other">
+                                    Other
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Company Size
+                            </label>
+                            <select class="form-select"
+                                    th:field="*{companySize}">
+                                <option value="">
+                                    Select Size
+                                </option>
+                                <option value="1-10">
+                                    1-10 Employees
+                                </option>
+                                <option value="11-50">
+                                    11-50 Employees
+                                </option>
+                                <option value="51-200">
+                                    51-200 Employees
+                                </option>
+                                <option value="201-500">
+                                    201-500 Employees
+                                </option>
+                                <option value="500+">
+                                    500+ Employees
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Location
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text"
+                                      style="background:#F0EFFE;
+                                             border-color:#E9ECEF;">
+                                    <i class="bi bi-geo-alt"
+                                       style="color:#6C63FF;">
+                                    </i>
+                                </span>
+                                <input type="text"
+                                       class="form-control"
+                                       th:field="*{location}"
+                                       placeholder="City, State"/>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">
+                                Website
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text"
+                                      style="background:#F0EFFE;
+                                             border-color:#E9ECEF;">
+                                    <i class="bi bi-globe"
+                                       style="color:#6C63FF;">
+                                    </i>
+                                </span>
+                                <input type="text"
+                                       class="form-control"
+                                       th:field="*{website}"
+                                       placeholder="https://yourcompany.com"/>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">
+                                Company Description
+                            </label>
+                            <textarea class="form-control"
+                                      th:field="*{companyDescription}"
+                                      rows="5"
+                                      placeholder="Tell job seekers about your company, culture, and what makes it a great place to work...">
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-lg-4">
+
+                <!-- Profile Status -->
+                <div class="profile-card">
+                    <div class="section-label">
+                        <i class="bi bi-clipboard-check
+                                  me-2"></i>
+                        Profile Checklist
+                    </div>
+                    <div style="font-size:13px;
+                                 color:#6C757D;
+                                 line-height:2.2;">
+                        <span id="chkCompany">⬜</span>
+                        Company Name<br/>
+                        <span id="chkIndustry">⬜</span>
+                        Industry<br/>
+                        <span id="chkSize">⬜</span>
+                        Company Size<br/>
+                        <span id="chkLocation">⬜</span>
+                        Location<br/>
+                        <span id="chkDesc">⬜</span>
+                        Company Description
+                    </div>
+                </div>
+
+                <!-- Approval Info -->
+                <div class="profile-card"
+                     style="background:linear-gradient(
+                             135deg, #1A1A2E, #0F3460);">
+                    <div style="font-size:13px;
+                                 font-weight:700;
+                                 color:white;
+                                 margin-bottom:12px;">
+                        ⚙️ How Approval Works
+                    </div>
+                    <ul style="color:rgba(255,255,255,0.7);
+                                font-size:12px;
+                                line-height:2;
+                                padding-left:15px;
+                                margin:0;">
+                        <li>Complete your company
+                            profile</li>
+                        <li>Admin reviews your
+                            account</li>
+                        <li>Once approved you can
+                            post jobs</li>
+                        <li>This ensures only real
+                            companies post jobs</li>
+                        <li>Protects job seekers
+                            from fake listings</li>
+                    </ul>
+                </div>
+
+                <!-- Why Verification -->
+                <div class="profile-card"
+                     style="border-left:4px solid #6C63FF;">
+                    <div style="font-size:13px;
+                                 font-weight:700;
+                                 color:#1A1A2E;
+                                 margin-bottom:8px;">
+                        🛡️ Why We Verify Employers
+                    </div>
+                    <p style="font-size:12px;
+                               color:#6C757D;
+                               line-height:1.7;
+                               margin:0;">
+                        HireNest manually verifies every
+                        employer to ensure zero fake job
+                        postings. This is our core
+                        promise to job seekers.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Save Button -->
+        <div class="d-flex justify-content-end
+                    gap-3 mt-3">
+            <a href="/employer/dashboard"
+               class="btn btn-outline-primary px-4">
+                Cancel
+            </a>
+            <button type="submit"
+                    class="btn btn-primary px-5">
+                <i class="bi bi-check-circle me-2"></i>
+                Save Company Profile
+            </button>
+        </div>
+
+    </form>
+</div>
+
+<script>
+function updateChecklist() {
+    const fields = [
+        { name: 'companyName', chk: 'chkCompany' },
+        { name: 'industry', chk: 'chkIndustry' },
+        { name: 'companySize', chk: 'chkSize' },
+        { name: 'location', chk: 'chkLocation' },
+        { name: 'companyDescription', chk: 'chkDesc' }
+    ];
+
+    fields.forEach(field => {
+        const el = document.querySelector(
+            '[name="' + field.name + '"]');
+        const chk = document.getElementById(field.chk);
+        if (el && el.value.trim() !== '') {
+            chk.textContent = '✅';
+        } else {
+            chk.textContent = '⬜';
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded',
+    updateChecklist);
+
+document.querySelectorAll('input, textarea, select')
+    .forEach(el => {
+        el.addEventListener('input', updateChecklist);
+        el.addEventListener('change', updateChecklist);
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

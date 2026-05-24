@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>My Profile - HireNest</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link th:href="@{/css/hirenest.css}" rel="stylesheet">
+    <style>
+        body {
+            background: #F8F9FF;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg,
+                #1A1A2E, #0F3460);
+            padding: 40px 0;
+            margin-bottom: 30px;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #E9ECEF;
+            box-shadow: 0 4px 20px
+                rgba(108,99,255,0.08);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .section-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #6C63FF;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #F0EFFE;
+        }
+
+        .resume-box {
+            border: 2px dashed #6C63FF;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            background: #F0EFFE;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .resume-box:hover {
+            background: #E8E6FF;
+        }
+
+        .skills-hint {
+            font-size: 12px;
+            color: #6C757D;
+            margin-top: 5px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg,
+                #6C63FF, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="hirenest-navbar">
+    <div class="container">
+        <div class="d-flex justify-content-between
+                    align-items-center">
+            <a href="/" class="hirenest-logo">
+                Hire<span>Nest</span>
+            </a>
+            <div class="d-flex align-items-center
+                        gap-3">
+                <a href="/seeker/dashboard"
+                   class="text-decoration-none"
+                   style="font-size:14px;
+                           font-weight:600;
+                           color:#6C757D;">
+                    <i class="bi bi-grid me-1"></i>
+                    Dashboard
+                </a>
+                <a href="/logout"
+                   class="btn btn-outline-primary
+                          btn-sm">
+                    <i class="bi bi-box-arrow-right
+                              me-1"></i>
+                    Logout
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <div class="d-flex align-items-center gap-4">
+            <div class="profile-avatar"
+                 th:text="${#strings.toUpperCase(
+                 #strings.substring(user.name,0,1))}">
+                K
+            </div>
+            <div>
+                <h2 style="color:white;
+                            font-weight:800;
+                            margin:0;"
+                    th:text="${user.name}">
+                    Kalyani Kangle
+                </h2>
+                <p style="color:rgba(255,255,255,0.6);
+                           margin:0;
+                           font-size:14px;"
+                   th:text="${user.email}">
+                    kalyani@gmail.com
+                </p>
+                <span style="background:rgba(108,99,255,0.3);
+                              color:#A5A0FF;
+                              padding:3px 12px;
+                              border-radius:20px;
+                              font-size:12px;
+                              font-weight:600;
+                              margin-top:6px;
+                              display:inline-block;">
+                    🎓 Job Seeker
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container pb-5">
+
+    <!-- Success Message -->
+    <div class="alert alert-success
+                d-flex align-items-center gap-2"
+         th:if="${param.saved}"
+         style="border-radius:12px;
+                border:none;
+                background:#E8F5E9;">
+        <i class="bi bi-check-circle-fill
+                  text-success"></i>
+        <span>Profile saved successfully!</span>
+    </div>
+
+    <form th:action="@{/seeker/profile}"
+          th:object="${profile}"
+          method="post"
+          enctype="multipart/form-data">
+
+        <div class="row g-4">
+
+            <!-- Left Column -->
+            <div class="col-lg-8">
+
+                <!-- Basic Information -->
+                <div class="profile-card">
+                    <div class="section-label">
+                        <i class="bi bi-person me-2"></i>
+                        Basic Information
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Phone Number
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text"
+                                      style="background:#F0EFFE;
+                                             border-color:#E9ECEF;">
+                                    <i class="bi bi-phone"
+                                       style="color:#6C63FF;">
+                                    </i>
+                                </span>
+                                <input type="text"
+                                       class="form-control"
+                                       th:field="*{phone}"
+                                       placeholder="Enter phone number"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Location
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text"
+                                      style="background:#F0EFFE;
+                                             border-color:#E9ECEF;">
+                                    <i class="bi bi-geo-alt"
+                                       style="color:#6C63FF;">
+                                    </i>
+                                </span>
+                                <input type="text"
+                                       class="form-control"
+                                       th:field="*{location}"
+                                       placeholder="City, State"/>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">
+                                Profile Summary
+                            </label>
+                            <textarea class="form-control"
+                                      th:field="*{profileSummary}"
+                                      rows="3"
+                                      placeholder="Write a short summary about yourself...">
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skills -->
+                <div class="profile-card">
+                    <div class="section-label">
+                        <i class="bi bi-stars me-2"></i>
+                        Skills
+                        <span style="color:#DC3545;
+                                      font-size:11px;
+                                      margin-left:8px;">
+                            ★ Required for job matching
+                        </span>
+                    </div>
+                    <input type="text"
+                           class="form-control"
+                           th:field="*{skills}"
+                           placeholder="Java, Spring Boot, MySQL, HTML, CSS"/>
+                    <p class="skills-hint">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Enter skills separated by commas.
+                        Our recommendation engine uses
+                        these to suggest matching jobs.
+                    </p>
+                </div>
+
+                <!-- Education -->
+                <div class="profile-card">
+                    <div class="section-label">
+                        <i class="bi bi-mortarboard me-2"></i>
+                        Education
+                    </div>
+                    <textarea class="form-control"
+                              th:field="*{education}"
+                              rows="4"
+                              placeholder="B.E. Computer Science Engineering&#10;Your College Name, City&#10;2022 - 2026&#10;CGPA: 8.5">
+                    </textarea>
+                </div>
+
+                <!-- Experience -->
+                <div class="profile-card">
+                    <div class="section-label">
+                        <i class="bi bi-briefcase me-2"></i>
+                        Experience
+                    </div>
+                    <textarea class="form-control"
+                              th:field="*{experience}"
+                              rows="4"
+                              placeholder="If fresher write: No prior work experience.&#10;Built academic projects using Java and Spring Boot.">
+                    </textarea>
+                </div>
+
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-lg-4">
+
+                <!-- Resume Upload -->
+                <div class="profile-card">
+                    <div class="section-label">
+                        <i class="bi bi-file-earmark-pdf
+                                  me-2"></i>
+                        Resume
+                    </div>
+
+                    <!-- Show existing resume -->
+                    <div th:if="${profile.resumePath != null
+                                 and !#strings.isEmpty(
+                                 profile.resumePath)}"
+                         style="margin-bottom:15px;">
+                        <div style="background:#E8F5E9;
+                                     border-radius:10px;
+                                     padding:12px;
+                                     display:flex;
+                                     align-items:center;
+                                     gap:10px;">
+                            <i class="bi bi-file-earmark-check-fill"
+                               style="color:#28A745;
+                                       font-size:20px;">
+                            </i>
+                            <div>
+                                <div style="font-size:13px;
+                                             font-weight:600;
+                                             color:#1A1A2E;">
+                                    Resume Uploaded
+                                </div>
+                                <div style="font-size:11px;
+                                             color:#6C757D;">
+                                    Click below to update
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="resume-box"
+                         onclick="document.getElementById(
+                         'resumeFile').click()">
+                        <i class="bi bi-cloud-upload"
+                           style="font-size:32px;
+                                   color:#6C63FF;
+                                   margin-bottom:10px;
+                                   display:block;">
+                        </i>
+                        <div style="font-weight:600;
+                                     color:#1A1A2E;
+                                     font-size:14px;">
+                            Upload Resume
+                        </div>
+                        <div style="font-size:12px;
+                                     color:#6C757D;
+                                     margin-top:4px;">
+                            PDF format only — Max 5MB
+                        </div>
+                    </div>
+                    <input type="file"
+                           id="resumeFile"
+                           name="resumeFile"
+                           accept=".pdf"
+                           style="display:none"
+                           onchange="showFileName(this)"/>
+                    <div id="fileNameDisplay"
+                         style="margin-top:10px;
+                                 font-size:13px;
+                                 color:#6C63FF;
+                                 text-align:center;
+                                 display:none;">
+                    </div>
+                </div>
+
+                <!-- Profile Completion -->
+                <div class="profile-card">
+                    <div class="section-label">
+                        <i class="bi bi-graph-up me-2"></i>
+                        Profile Strength
+                    </div>
+                    <div style="margin-bottom:8px;
+                                 display:flex;
+                                 justify-content:space-between;">
+                        <span style="font-size:13px;
+                                      color:#6C757D;">
+                            Completion
+                        </span>
+                        <span style="font-size:13px;
+                                      font-weight:700;
+                                      color:#6C63FF;"
+                              id="completionText">
+                            0%
+                        </span>
+                    </div>
+                    <div style="background:#F0EFFE;
+                                 border-radius:10px;
+                                 height:8px;
+                                 overflow:hidden;">
+                        <div id="progressBar"
+                             style="height:100%;
+                                     background:linear-gradient(
+                                     90deg, #6C63FF, #764ba2);
+                                     width:0%;
+                                     transition:width 0.5s;
+                                     border-radius:10px;">
+                        </div>
+                    </div>
+                    <div style="margin-top:15px;">
+                        <div style="font-size:12px;
+                                     color:#6C757D;
+                                     margin-bottom:8px;
+                                     font-weight:600;">
+                            Complete these:
+                        </div>
+                        <div style="font-size:12px;
+                                     color:#6C757D;
+                                     line-height:2;">
+                            <span id="chkPhone">⬜</span>
+                            Phone Number<br/>
+                            <span id="chkLocation">⬜</span>
+                            Location<br/>
+                            <span id="chkSkills">⬜</span>
+                            Skills (important!)<br/>
+                            <span id="chkEducation">⬜</span>
+                            Education<br/>
+                            <span id="chkSummary">⬜</span>
+                            Profile Summary
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tips Card -->
+                <div class="profile-card"
+                     style="background:linear-gradient(
+                             135deg, #1A1A2E, #0F3460);">
+                    <div style="font-size:13px;
+                                 font-weight:700;
+                                 color:white;
+                                 margin-bottom:12px;">
+                        💡 Profile Tips
+                    </div>
+                    <ul style="color:rgba(255,255,255,0.7);
+                                font-size:12px;
+                                line-height:2;
+                                padding-left:15px;
+                                margin:0;">
+                        <li>Add all your skills for
+                            better job matches</li>
+                        <li>Keep resume updated
+                            and under 5MB</li>
+                        <li>Write clear education
+                            details</li>
+                        <li>Complete profile gets
+                            more visibility</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Save Button -->
+        <div class="d-flex justify-content-end
+                    gap-3 mt-3">
+            <a href="/seeker/dashboard"
+               class="btn btn-outline-primary px-4">
+                Cancel
+            </a>
+            <button type="submit"
+                    class="btn btn-primary px-5">
+                <i class="bi bi-check-circle me-2"></i>
+                Save Profile
+            </button>
+        </div>
+
+    </form>
+</div>
+
+<script>
+// Show selected file name
+function showFileName(input) {
+    if (input.files && input.files[0]) {
+        const display = document.getElementById(
+            'fileNameDisplay');
+        display.style.display = 'block';
+        display.innerHTML =
+            '<i class="bi bi-file-earmark-pdf me-1"></i>'
+            + input.files[0].name;
+    }
+}
+
+// Profile completion tracker
+function updateCompletion() {
+    const fields = [
+        { id: 'phone', chk: 'chkPhone' },
+        { id: 'location', chk: 'chkLocation' },
+        { id: 'skills', chk: 'chkSkills' },
+        { id: 'education', chk: 'chkEducation' },
+        { id: 'profileSummary', chk: 'chkSummary' }
+    ];
+
+    let filled = 0;
+    fields.forEach(field => {
+        const el = document.querySelector(
+            '[name="' + field.id + '"]');
+        const chk = document.getElementById(field.chk);
+        if (el && el.value.trim() !== '') {
+            filled++;
+            chk.textContent = '✅';
+        } else {
+            chk.textContent = '⬜';
+        }
+    });
+
+    const percent = Math.round((filled / fields.length) * 100);
+    document.getElementById('progressBar')
+        .style.width = percent + '%';
+    document.getElementById('completionText')
+        .textContent = percent + '%';
+}
+
+// Run on page load
+document.addEventListener('DOMContentLoaded',
+    updateCompletion);
+
+// Run on every input change
+document.querySelectorAll('input, textarea')
+    .forEach(el => {
+        el.addEventListener('input', updateCompletion);
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
