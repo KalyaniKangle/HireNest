@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>Browse Jobs - HireNest</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link th:href="@{/css/hirenest.css}" rel="stylesheet">
+    <style>
+        body { background: #F8F9FF; font-family: 'Inter', sans-serif; }
+
+        .sidebar {
+            background: white;
+            min-height: 100vh;
+            border-right: 1px solid #E9ECEF;
+            padding: 20px 0;
+            position: fixed;
+            width: 250px;
+            top: 0; left: 0;
+            z-index: 100;
+        }
+
+        .sidebar-logo {
+            padding: 15px 25px 25px;
+            border-bottom: 1px solid #E9ECEF;
+            margin-bottom: 15px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 25px;
+            color: #6C757D;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover {
+            background: #F0EFFE;
+            color: #6C63FF;
+            border-left-color: #6C63FF;
+        }
+
+        .sidebar-menu a.active {
+            background: #F0EFFE;
+            color: #6C63FF;
+            border-left-color: #6C63FF;
+            font-weight: 600;
+        }
+
+        .sidebar-menu a i { font-size: 18px; width: 20px; }
+
+        .main-content { margin-left: 250px; padding: 30px; }
+
+        .top-bar {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            border: 1px solid #E9ECEF;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #E9ECEF;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+        }
+
+        .search-input-group {
+            position: relative;
+        }
+
+        .search-input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6C63FF;
+            font-size: 16px;
+        }
+
+        .search-input-group input {
+            padding-left: 45px;
+            border: 1.5px solid #E9ECEF;
+            border-radius: 10px;
+            padding-top: 12px;
+            padding-bottom: 12px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .search-input-group input:focus {
+            border-color: #6C63FF;
+            box-shadow: 0 0 0 3px rgba(108,99,255,0.1);
+        }
+
+        .filter-select {
+            border: 1.5px solid #E9ECEF;
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 14px;
+            color: #1A1A2E;
+            transition: all 0.2s;
+        }
+
+        .filter-select:focus {
+            border-color: #6C63FF;
+            box-shadow: 0 0 0 3px rgba(108,99,255,0.1);
+        }
+
+        .btn-search {
+            background: #6C63FF;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-search:hover {
+            background: #4B44CC;
+            color: white;
+        }
+
+        .btn-clear {
+            background: white;
+            color: #6C757D;
+            border: 1.5px solid #E9ECEF;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-clear:hover {
+            border-color: #6C757D;
+            color: #1A1A2E;
+        }
+
+        /* Job Card */
+        .job-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #E9ECEF;
+            padding: 25px;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: block;
+            color: inherit;
+            height: 100%;
+        }
+
+        .job-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 35px rgba(108,99,255,0.12);
+            border-color: #6C63FF;
+            color: inherit;
+        }
+
+        .company-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #6C63FF, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .badge-type {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-full-time { background: #E8F5E9; color: #2E7D32; }
+        .badge-internship { background: #FFF8E1; color: #F57F17; }
+        .badge-remote { background: #E3F2FD; color: #1565C0; }
+        .badge-part-time { background: #F3E5F5; color: #6A1B9A; }
+
+        .skill-tag {
+            background: #F0EFFE;
+            color: #6C63FF;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-block;
+            margin: 2px 2px;
+        }
+
+        .meta-info {
+            font-size: 13px;
+            color: #6C757D;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .meta-info i { color: #6C63FF; }
+
+        .salary-text {
+            font-size: 14px;
+            font-weight: 700;
+            color: #6C63FF;
+        }
+
+        .btn-apply-now {
+            background: #6C63FF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-apply-now:hover {
+            background: #4B44CC;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-active-tag {
+            background: #F0EFFE;
+            color: #6C63FF;
+            border: 1px solid rgba(108,99,255,0.3);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+
+        .filter-active-tag:hover { background: #E0DCFF; color: #6C63FF; }
+
+        .empty-state {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #E9ECEF;
+            padding: 60px 30px;
+            text-align: center;
+        }
+
+        .recommend-banner {
+            background: linear-gradient(135deg, #6C63FF, #764ba2);
+            border-radius: 16px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="sidebar-logo">
+        <a href="/" class="hirenest-logo">
+            Hire<span>Nest</span>
+        </a>
+        <div class="hirenest-tagline mt-1">
+            WHERE CAREERS BEGIN
+        </div>
+    </div>
+    <div class="sidebar-menu">
+        <a href="/seeker/dashboard">
+            <i class="bi bi-grid"></i>
+            Dashboard
+        </a>
+        <a href="/seeker/profile">
+            <i class="bi bi-person-circle"></i>
+            My Profile
+        </a>
+        <a href="/seeker/jobs" class="active">
+            <i class="bi bi-briefcase"></i>
+            Browse Jobs
+        </a>
+        <a href="/seeker/recommended">
+            <i class="bi bi-stars"></i>
+            Recommended Jobs
+        </a>
+        <a href="/seeker/applications">
+            <i class="bi bi-file-earmark-text"></i>
+            My Applications
+        </a>
+    </div>
+    <div style="position:absolute; bottom:20px;
+                width:100%; padding:0 25px;">
+        <a href="/logout"
+           style="display:flex; align-items:center;
+                  gap:10px; color:#DC3545;
+                  text-decoration:none;
+                  font-size:14px; font-weight:600;">
+            <i class="bi bi-box-arrow-right"></i>
+            Logout
+        </a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div>
+            <h4 style="font-weight:800; margin:0; color:#1A1A2E;">
+                Browse Jobs
+            </h4>
+            <p style="color:#6C757D; font-size:14px; margin:0;">
+                Explore all active job listings
+            </p>
+        </div>
+        <a href="/seeker/recommended"
+           style="background:#F0EFFE; color:#6C63FF;
+                  padding:10px 20px; border-radius:12px;
+                  font-weight:700; font-size:13px;
+                  text-decoration:none; display:flex;
+                  align-items:center; gap:8px;">
+            <i class="bi bi-stars"></i>
+            View Recommended
+        </a>
+    </div>
+
+    <!-- Recommend Banner (shown when no search active) -->
+    <div th:if="${(keyword == null or keyword.isEmpty())
+                 and (location == null or location.isEmpty())
+                 and (jobType == null or jobType.isEmpty())}"
+         class="recommend-banner">
+        <div>
+            <h5 style="color:white; font-weight:700; margin:0;">
+                ✨ Want jobs that match your skills?
+            </h5>
+            <p style="color:rgba(255,255,255,0.75);
+                       font-size:13px; margin:5px 0 0;">
+                Our recommendation engine matches your profile skills with job requirements automatically
+            </p>
+        </div>
+        <a href="/seeker/recommended"
+           style="background:white; color:#6C63FF;
+                  padding:12px 25px; border-radius:10px;
+                  font-weight:700; font-size:14px;
+                  text-decoration:none; white-space:nowrap;">
+            See Recommendations →
+        </a>
+    </div>
+
+    <!-- Search & Filter Bar -->
+    <div class="search-bar">
+        <form th:action="@{/seeker/jobs}" method="get">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label style="font-size:13px; font-weight:600;
+                                  color:#1A1A2E; margin-bottom:6px;
+                                  display:block;">
+                        <i class="bi bi-search me-1"
+                           style="color:#6C63FF;"></i>
+                        Search Jobs
+                    </label>
+                    <div class="search-input-group">
+                        <i class="bi bi-search"></i>
+                        <input type="text" name="keyword"
+                               class="form-control"
+                               th:value="${keyword}"
+                               placeholder="Job title, skills, keywords...">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label style="font-size:13px; font-weight:600;
+                                  color:#1A1A2E; margin-bottom:6px;
+                                  display:block;">
+                        <i class="bi bi-geo-alt me-1"
+                           style="color:#6C63FF;"></i>
+                        Location
+                    </label>
+                    <input type="text" name="location"
+                           class="form-control filter-select"
+                           th:value="${location}"
+                           placeholder="e.g. Pune, Mumbai">
+                </div>
+                <div class="col-md-3">
+                    <label style="font-size:13px; font-weight:600;
+                                  color:#1A1A2E; margin-bottom:6px;
+                                  display:block;">
+                        <i class="bi bi-funnel me-1"
+                           style="color:#6C63FF;"></i>
+                        Job Type
+                    </label>
+                    <select name="jobType" class="form-select filter-select">
+                        <option value="">All Types</option>
+                        <option th:each="type : ${jobTypes}"
+                                th:value="${type}"
+                                th:text="${type.toString().replace('_',' ')}"
+                                th:selected="${type.toString() == jobType}">
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn-search flex-grow-1">
+                            <i class="bi bi-search"></i>
+                            Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Active Filter Tags -->
+            <div th:if="${(keyword != null and !keyword.isEmpty())
+                         or (location != null and !location.isEmpty())
+                         or (jobType != null and !jobType.isEmpty())}"
+                 class="d-flex align-items-center gap-2 flex-wrap mt-3 pt-3"
+                 style="border-top:1px solid #E9ECEF;">
+                <span style="font-size:12px; color:#6C757D; font-weight:600;">
+                    Active Filters:
+                </span>
+                <span th:if="${keyword != null and !keyword.isEmpty()}"
+                      class="filter-active-tag">
+                    🔍 <span th:text="${keyword}"></span>
+                </span>
+                <span th:if="${location != null and !location.isEmpty()}"
+                      class="filter-active-tag">
+                    📍 <span th:text="${location}"></span>
+                </span>
+                <span th:if="${jobType != null and !jobType.isEmpty()}"
+                      class="filter-active-tag">
+                    💼 <span th:text="${jobType.replace('_',' ')}"></span>
+                </span>
+                <a href="/seeker/jobs" class="btn-clear ms-2">
+                    <i class="bi bi-x-circle"></i>
+                    Clear All
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results Header -->
+    <div class="results-header">
+        <div style="font-size:14px; color:#6C757D;">
+            Showing
+            <span style="font-weight:700; color:#1A1A2E;"
+                  th:text="${totalJobs}">0</span>
+            job<span th:if="${totalJobs != 1}">s</span>
+        </div>
+    </div>
+
+    <!-- Job Cards Grid -->
+    <div th:if="${jobs != null and !#lists.isEmpty(jobs)}"
+         class="row g-4">
+        <div th:each="job : ${jobs}" class="col-md-6">
+            <a th:href="@{/seeker/jobs/{id}(id=${job.jobId})}"
+               class="job-card">
+                <!-- Card Header -->
+                <div class="d-flex align-items-start gap-3 mb-3">
+                    <div class="company-avatar"
+                         th:text="${#strings.substring(job.title,0,1)}">
+                        J
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 style="font-weight:800; color:#1A1A2E;
+                                    margin:0 0 3px;"
+                            th:text="${job.title}">
+                            Job Title
+                        </h6>
+                        <div style="font-size:13px; color:#6C757D;"
+                             th:text="${job.employer.name}">
+                            Company Name
+                        </div>
+                    </div>
+                    <span th:text="${job.jobType.toString().replace('_',' ')}"
+                          class="badge-type"
+                          th:classappend="${job.jobType.toString() == 'FULL_TIME'} ? 'badge-full-time' :
+                                          (${job.jobType.toString() == 'INTERNSHIP'} ? 'badge-internship' :
+                                          (${job.jobType.toString() == 'REMOTE'} ? 'badge-remote' : 'badge-part-time'))">
+                    </span>
+                </div>
+
+                <!-- Meta Row -->
+                <div class="d-flex flex-wrap gap-3 mb-3">
+                    <span class="meta-info">
+                        <i class="bi bi-geo-alt"></i>
+                        <span th:text="${job.location}">Location</span>
+                    </span>
+                    <span class="meta-info"
+                          th:if="${job.salaryRange != null and !job.salaryRange.isEmpty()}">
+                        <i class="bi bi-currency-rupee"></i>
+                        <span class="salary-text"
+                              th:text="${job.salaryRange}">Salary</span>
+                    </span>
+                    <span class="meta-info">
+                        <i class="bi bi-calendar3"></i>
+                        Deadline:
+                        <span th:text="${#temporals.format(job.deadline,'dd MMM yyyy')}">
+                        </span>
+                    </span>
+                </div>
+
+                <!-- Skills -->
+                <div class="mb-3" th:if="${job.requiredSkills != null}">
+                    <span th:each="skill,iterStat : ${#strings.arraySplit(job.requiredSkills,',')}"
+                          th:if="${iterStat.index < 4}"
+                          class="skill-tag"
+                          th:text="${#strings.trim(skill)}">
+                    </span>
+                    <span th:if="${#strings.arraySplit(job.requiredSkills,',').length > 4}"
+                          class="skill-tag"
+                          th:text="'+ ' + (${#strings.arraySplit(job.requiredSkills,',').length - 4}) + ' more'">
+                    </span>
+                </div>
+
+                <!-- Footer -->
+                <div class="d-flex justify-content-between align-items-center pt-2"
+                     style="border-top:1px solid #E9ECEF;">
+                    <span style="font-size:12px; color:#6C757D;">
+                        <i class="bi bi-clock me-1"></i>
+                        <span th:text="${#temporals.format(job.postedAt,'dd MMM yyyy')}">
+                            Posted Date
+                        </span>
+                    </span>
+                    <span class="btn-apply-now">
+                        View Details
+                        <i class="bi bi-arrow-right"></i>
+                    </span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div th:if="${jobs == null or #lists.isEmpty(jobs)}"
+         class="empty-state">
+        <div style="font-size:60px; margin-bottom:20px;">🔍</div>
+        <h5 style="font-weight:800; color:#1A1A2E; margin-bottom:10px;">
+            No Jobs Found
+        </h5>
+        <p style="color:#6C757D; font-size:14px; margin-bottom:25px;">
+            No jobs match your search. Try different keywords or
+            <a href="/seeker/jobs" style="color:#6C63FF; font-weight:600;">
+                clear all filters
+            </a>.
+        </p>
+        <a href="/seeker/recommended"
+           style="background:#6C63FF; color:white;
+                  padding:12px 25px; border-radius:12px;
+                  font-weight:700; font-size:14px;
+                  text-decoration:none; display:inline-flex;
+                  align-items:center; gap:8px;">
+            <i class="bi bi-stars"></i>
+            Try Recommended Jobs
+        </a>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

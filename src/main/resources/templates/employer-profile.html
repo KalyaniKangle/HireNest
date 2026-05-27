@@ -132,7 +132,7 @@
                    th:text="${user.email}">
                     employer@company.com
                 </p>
-                <!-- Approval Status -->
+<!--                 Approval Status
                 <span class="approval-badge-approved"
                       th:if="${profile.approved}">
                     ✅ Approved — Can Post Jobs
@@ -141,7 +141,7 @@
                       th:unless="${profile.approved}">
                     ⏳ Pending Admin Approval
                 </span>
-            </div>
+ -->            </div>
         </div>
     </div>
 </div>
@@ -161,7 +161,7 @@
             Waiting for admin approval.</span>
     </div>
 
-    <!-- Pending Approval Notice -->
+<!--     Pending Approval Notice
     <div th:unless="${profile.approved}"
          style="background:#FFF8E1;
                 border-radius:12px;
@@ -187,7 +187,7 @@
             </div>
         </div>
     </div>
-
+ -->
     <form th:action="@{/employer/profile}"
           th:object="${profile}"
           method="post">

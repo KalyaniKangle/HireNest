@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>Post a Job - HireNest</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link th:href="@{/css/hirenest.css}" rel="stylesheet">
+    <style>
+        body { background: #F8F9FF; font-family: 'Inter', sans-serif; }
+
+        .sidebar {
+            background: white;
+            min-height: 100vh;
+            border-right: 1px solid #E9ECEF;
+            padding: 20px 0;
+            position: fixed;
+            width: 250px;
+            top: 0;
+            left: 0;
+            z-index: 100;
+        }
+
+        .sidebar-logo {
+            padding: 15px 25px 25px;
+            border-bottom: 1px solid #E9ECEF;
+            margin-bottom: 15px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 25px;
+            color: #6C757D;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover {
+            background: #F0EFFE;
+            color: #6C63FF;
+            border-left-color: #6C63FF;
+        }
+
+        .sidebar-menu a.active {
+            background: #F0EFFE;
+            color: #6C63FF;
+            border-left-color: #6C63FF;
+            font-weight: 600;
+        }
+
+        .sidebar-menu a i {
+            font-size: 18px;
+            width: 20px;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .top-bar {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            border: 1px solid #E9ECEF;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #E9ECEF;
+            padding: 35px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1A1A2E;
+            margin-bottom: 8px;
+        }
+
+        .form-control, .form-select {
+            border: 1.5px solid #E9ECEF;
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 14px;
+            color: #1A1A2E;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #6C63FF;
+            box-shadow: 0 0 0 3px rgba(108,99,255,0.1);
+        }
+
+        .form-control.is-invalid, .form-select.is-invalid {
+            border-color: #DC3545;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 130px;
+        }
+
+        .section-divider {
+            font-size: 13px;
+            font-weight: 700;
+            color: #6C63FF;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 30px 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #E9ECEF;
+        }
+
+        .btn-post {
+            background: #6C63FF;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-post:hover {
+            background: #4B44CC;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(108,99,255,0.35);
+        }
+
+        .btn-cancel {
+            background: white;
+            color: #6C757D;
+            border: 1.5px solid #E9ECEF;
+            padding: 14px 25px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-cancel:hover {
+            border-color: #6C757D;
+            color: #1A1A2E;
+        }
+
+        .skill-hint {
+            background: #F0EFFE;
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 13px;
+            color: #6C63FF;
+            margin-top: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .tip-card {
+            background: linear-gradient(135deg, #6C63FF, #764ba2);
+            border-radius: 16px;
+            padding: 25px;
+            color: white;
+            margin-top: 25px;
+        }
+
+        .tip-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.85);
+        }
+
+        .tip-item i {
+            color: #A5A0FF;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="sidebar-logo">
+        <a href="/" class="hirenest-logo">
+            Hire<span>Nest</span>
+        </a>
+        <div class="hirenest-tagline mt-1">
+            WHERE CAREERS BEGIN
+        </div>
+    </div>
+    <div class="sidebar-menu">
+        <a href="/employer/dashboard">
+            <i class="bi bi-grid"></i>
+            Dashboard
+        </a>
+        <a href="/employer/profile">
+            <i class="bi bi-building"></i>
+            Company Profile
+        </a>
+        <a href="/employer/post-job" class="active">
+            <i class="bi bi-plus-circle"></i>
+            Post a Job
+        </a>
+        <a href="/employer/jobs">
+            <i class="bi bi-briefcase"></i>
+            My Job Listings
+        </a>
+        <a href="/employer/applications">
+            <i class="bi bi-people"></i>
+            All Applicants
+        </a>
+    </div>
+    <div style="position:absolute; bottom:20px;
+                width:100%; padding:0 25px;">
+        <a href="/logout"
+           style="display:flex; align-items:center;
+                  gap:10px; color:#DC3545;
+                  text-decoration:none;
+                  font-size:14px; font-weight:600;">
+            <i class="bi bi-box-arrow-right"></i>
+            Logout
+        </a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div>
+            <h4 style="font-weight:800; margin:0; color:#1A1A2E;">
+                Post a New Job
+            </h4>
+            <p style="color:#6C757D; font-size:14px; margin:0;">
+                Fill in the details to attract the right candidates
+            </p>
+        </div>
+        <a href="/employer/jobs" class="btn-cancel">
+            <i class="bi bi-arrow-left"></i>
+            Back to Listings
+        </a>
+    </div>
+
+    <!-- Success / Error Alert -->
+    <div th:if="${param.posted}"
+         class="alert alert-success d-flex align-items-center
+                gap-2 rounded-3 mb-4"
+         role="alert">
+        <i class="bi bi-check-circle-fill"></i>
+        Job posted successfully! It is now visible to seekers.
+    </div>
+
+    <div class="row g-4">
+
+        <!-- Form Column -->
+        <div class="col-lg-8">
+            <div class="form-card">
+                <form th:action="@{/employer/post-job}"
+                      th:object="${jobRequest}"
+                      method="post">
+
+                    <!-- Basic Info -->
+                    <div class="section-divider">
+                        <i class="bi bi-info-circle"></i>
+                        Basic Information
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">
+                            Job Title <span style="color:#DC3545;">*</span>
+                        </label>
+                        <input type="text"
+                               th:field="*{title}"
+                               th:classappend="${#fields.hasErrors('title')} ? 'is-invalid'"
+                               class="form-control"
+                               placeholder="e.g. Java Backend Developer">
+                        <div class="invalid-feedback"
+                             th:if="${#fields.hasErrors('title')}"
+                             th:errors="*{title}">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">
+                            Job Description <span style="color:#DC3545;">*</span>
+                        </label>
+                        <textarea th:field="*{description}"
+                                  th:classappend="${#fields.hasErrors('description')} ? 'is-invalid'"
+                                  class="form-control"
+                                  placeholder="Describe the role, responsibilities, and what a typical day looks like..."></textarea>
+                        <div class="invalid-feedback"
+                             th:if="${#fields.hasErrors('description')}"
+                             th:errors="*{description}">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">
+                            Required Skills <span style="color:#DC3545;">*</span>
+                        </label>
+                        <input type="text"
+                               th:field="*{requiredSkills}"
+                               th:classappend="${#fields.hasErrors('requiredSkills')} ? 'is-invalid'"
+                               class="form-control"
+                               placeholder="e.g. Java, Spring Boot, MySQL, REST API">
+                        <div class="invalid-feedback"
+                             th:if="${#fields.hasErrors('requiredSkills')}"
+                             th:errors="*{requiredSkills}">
+                        </div>
+                        <div class="skill-hint">
+                            <i class="bi bi-lightbulb-fill"></i>
+                            <span>Separate skills with commas. Our recommendation engine uses these to match candidates automatically.</span>
+                        </div>
+                    </div>
+
+                    <!-- Job Details -->
+                    <div class="section-divider">
+                        <i class="bi bi-sliders"></i>
+                        Job Details
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Location <span style="color:#DC3545;">*</span>
+                            </label>
+                            <input type="text"
+                                   th:field="*{location}"
+                                   th:classappend="${#fields.hasErrors('location')} ? 'is-invalid'"
+                                   class="form-control"
+                                   placeholder="e.g. Pune, Maharashtra">
+                            <div class="invalid-feedback"
+                                 th:if="${#fields.hasErrors('location')}"
+                                 th:errors="*{location}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Salary Range
+                            </label>
+                            <input type="text"
+                                   th:field="*{salaryRange}"
+                                   class="form-control"
+                                   placeholder="e.g. ₹3L - ₹5L/year">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Job Type <span style="color:#DC3545;">*</span>
+                            </label>
+                            <select th:field="*{jobType}"
+                                    th:classappend="${#fields.hasErrors('jobType')} ? 'is-invalid'"
+                                    class="form-select">
+                                <option value="">-- Select Job Type --</option>
+                                <option th:each="type : ${jobTypes}"
+                                        th:value="${type}"
+                                        th:text="${type.toString().replace('_',' ')}">
+                                </option>
+                            </select>
+                            <div class="invalid-feedback"
+                                 th:if="${#fields.hasErrors('jobType')}"
+                                 th:errors="*{jobType}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Application Deadline <span style="color:#DC3545;">*</span>
+                            </label>
+                            <input type="date"
+                                   th:field="*{deadline}"
+                                   th:classappend="${#fields.hasErrors('deadline')} ? 'is-invalid'"
+                                   class="form-control">
+                            <div class="invalid-feedback"
+                                 th:if="${#fields.hasErrors('deadline')}"
+                                 th:errors="*{deadline}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-3 flex-wrap pt-2">
+                        <button type="submit" class="btn-post">
+                            <i class="bi bi-rocket-takeoff"></i>
+                            Post Job Now
+                        </button>
+                        <a href="/employer/jobs" class="btn-cancel">
+                            <i class="bi bi-x-circle"></i>
+                            Cancel
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+        <!-- Tips Column -->
+        <div class="col-lg-4">
+
+            <!-- Posting Tips -->
+            <div class="tip-card">
+                <h6 style="font-weight:700; margin-bottom:18px;
+                            font-size:15px; color:white;">
+                    <i class="bi bi-lightbulb me-2"></i>
+                    Tips for a Great Job Post
+                </h6>
+                <div class="tip-item">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>Use a clear, specific job title. Avoid vague titles like "Developer Wanted".</span>
+                </div>
+                <div class="tip-item">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>List all required skills separated by commas for accurate candidate matching.</span>
+                </div>
+                <div class="tip-item">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>Add salary range — posts with salary get 3x more applications.</span>
+                </div>
+                <div class="tip-item">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>Set a realistic deadline — at least 2 weeks gives seekers enough time to apply.</span>
+                </div>
+                <div class="tip-item" style="margin-bottom:0;">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>Write a detailed description covering responsibilities and growth opportunities.</span>
+                </div>
+            </div>
+
+            <!-- Quick Stats Card -->
+            <div style="background:white; border-radius:16px;
+                        border:1px solid #E9ECEF;
+                        padding:25px; margin-top:20px;">
+                <h6 style="font-weight:700; color:#1A1A2E;
+                            margin-bottom:18px; font-size:15px;">
+                    <i class="bi bi-bar-chart me-2"
+                       style="color:#6C63FF;"></i>
+                    Platform Reach
+                </h6>
+                <div style="display:flex; flex-direction:column; gap:14px;">
+                    <div style="display:flex; justify-content:space-between;
+                                align-items:center;">
+                        <span style="font-size:13px; color:#6C757D;">
+                            Active Job Seekers
+                        </span>
+                        <span style="font-weight:700; color:#1A1A2E; font-size:15px;">
+                            1,200+
+                        </span>
+                    </div>
+                    <div style="height:1px; background:#E9ECEF;"></div>
+                    <div style="display:flex; justify-content:space-between;
+                                align-items:center;">
+                        <span style="font-size:13px; color:#6C757D;">
+                            Avg. Applications/Job
+                        </span>
+                        <span style="font-weight:700; color:#1A1A2E; font-size:15px;">
+                            18
+                        </span>
+                    </div>
+                    <div style="height:1px; background:#E9ECEF;"></div>
+                    <div style="display:flex; justify-content:space-between;
+                                align-items:center;">
+                        <span style="font-size:13px; color:#6C757D;">
+                            Skill-matched Reach
+                        </span>
+                        <span style="font-weight:700; color:#6C63FF; font-size:15px;">
+                            Automatic ✨
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
