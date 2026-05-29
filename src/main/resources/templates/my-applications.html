@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>My Applications - HireNest</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link th:href="@{/css/hirenest.css}" rel="stylesheet">
+    <style>
+        body { background: #F8F9FF; font-family: 'Inter', sans-serif; }
+
+        .sidebar {
+            background: white;
+            min-height: 100vh;
+            border-right: 1px solid #E9ECEF;
+            padding: 20px 0;
+            position: fixed;
+            width: 250px;
+            top: 0; left: 0;
+            z-index: 100;
+        }
+
+        .sidebar-logo {
+            padding: 15px 25px 25px;
+            border-bottom: 1px solid #E9ECEF;
+            margin-bottom: 15px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 25px;
+            color: #6C757D;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover {
+            background: #F0EFFE;
+            color: #6C63FF;
+            border-left-color: #6C63FF;
+        }
+
+        .sidebar-menu a.active {
+            background: #F0EFFE;
+            color: #6C63FF;
+            border-left-color: #6C63FF;
+            font-weight: 600;
+        }
+
+        .sidebar-menu a i { font-size: 18px; width: 20px; }
+
+        .main-content { margin-left: 250px; padding: 30px; }
+
+        .top-bar {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            border: 1px solid #E9ECEF;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid #E9ECEF;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(108,99,255,0.1);
+        }
+
+        .application-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #E9ECEF;
+            padding: 25px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .application-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(108,99,255,0.1);
+        }
+
+        /* Status left border color */
+        .status-applied {
+            border-left: 4px solid #6C63FF;
+        }
+
+        .status-shortlisted {
+            border-left: 4px solid #FFC107;
+        }
+
+        .status-selected {
+            border-left: 4px solid #28A745;
+        }
+
+        .status-rejected {
+            border-left: 4px solid #DC3545;
+        }
+
+        /* Status badges */
+        .badge-status {
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge-applied {
+            background: #F0EFFE;
+            color: #6C63FF;
+        }
+
+        .badge-shortlisted {
+            background: #FFF8E1;
+            color: #F57F17;
+        }
+
+        .badge-selected {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+
+        .badge-rejected {
+            background: #FFEBEE;
+            color: #C62828;
+        }
+
+        /* Timeline tracker */
+        .status-timeline {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin-top: 15px;
+        }
+
+        .timeline-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+
+        .timeline-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 800;
+            border: 2px solid #E9ECEF;
+            background: white;
+            color: #6C757D;
+            position: relative;
+            z-index: 1;
+        }
+
+        .timeline-dot.completed {
+            background: #6C63FF;
+            border-color: #6C63FF;
+            color: white;
+        }
+
+        .timeline-dot.current {
+            background: white;
+            border-color: #6C63FF;
+            color: #6C63FF;
+            box-shadow: 0 0 0 3px rgba(108,99,255,0.2);
+        }
+
+        .timeline-dot.success {
+            background: #28A745;
+            border-color: #28A745;
+            color: white;
+        }
+
+        .timeline-dot.danger {
+            background: #DC3545;
+            border-color: #DC3545;
+            color: white;
+        }
+
+        .timeline-label {
+            font-size: 10px;
+            color: #6C757D;
+            margin-top: 5px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .timeline-line {
+            flex: 1;
+            height: 2px;
+            background: #E9ECEF;
+            margin-bottom: 18px;
+        }
+
+        .timeline-line.active {
+            background: #6C63FF;
+        }
+
+        .company-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #6C63FF, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .empty-state {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #E9ECEF;
+            padding: 60px 30px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="sidebar-logo">
+        <a href="/" class="hirenest-logo">
+            Hire<span>Nest</span>
+        </a>
+        <div class="hirenest-tagline mt-1">
+            WHERE CAREERS BEGIN
+        </div>
+    </div>
+    <div class="sidebar-menu">
+        <a href="/seeker/dashboard">
+            <i class="bi bi-grid"></i>
+            Dashboard
+        </a>
+        <a href="/seeker/profile">
+            <i class="bi bi-person-circle"></i>
+            My Profile
+        </a>
+        <a href="/seeker/jobs">
+            <i class="bi bi-briefcase"></i>
+            Browse Jobs
+        </a>
+        <a href="/seeker/recommended">
+            <i class="bi bi-stars"></i>
+            Recommended Jobs
+        </a>
+        <a href="/seeker/applications" class="active">
+            <i class="bi bi-file-earmark-text"></i>
+            My Applications
+        </a>
+    </div>
+    <div style="position:absolute; bottom:20px;
+                width:100%; padding:0 25px;">
+        <a href="/logout"
+           style="display:flex; align-items:center;
+                  gap:10px; color:#DC3545;
+                  text-decoration:none;
+                  font-size:14px; font-weight:600;">
+            <i class="bi bi-box-arrow-right"></i>
+            Logout
+        </a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div>
+            <h4 style="font-weight:800; margin:0; color:#1A1A2E;">
+                My Applications
+            </h4>
+            <p style="color:#6C757D; font-size:14px; margin:0;">
+                Track all your job applications in real time
+            </p>
+        </div>
+        <a href="/seeker/jobs"
+           style="background:#6C63FF; color:white;
+                  padding:10px 20px; border-radius:12px;
+                  font-weight:700; font-size:13px;
+                  text-decoration:none; display:flex;
+                  align-items:center; gap:8px;">
+            <i class="bi bi-search"></i>
+            Find More Jobs
+        </a>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="row g-4 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div style="font-size:28px; font-weight:800;
+                             color:#6C63FF;"
+                     th:text="${totalApplied}">0</div>
+                <div style="font-size:12px; color:#6C757D;
+                             margin-top:4px; font-weight:600;">
+                    Total Applied
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div style="font-size:28px; font-weight:800;
+                             color:#F57F17;"
+                     th:text="${shortlisted}">0</div>
+                <div style="font-size:12px; color:#6C757D;
+                             margin-top:4px; font-weight:600;">
+                    Shortlisted
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div style="font-size:28px; font-weight:800;
+                             color:#28A745;"
+                     th:text="${selected}">0</div>
+                <div style="font-size:12px; color:#6C757D;
+                             margin-top:4px; font-weight:600;">
+                    Selected
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div style="font-size:28px; font-weight:800;
+                             color:#DC3545;"
+                     th:text="${rejected}">0</div>
+                <div style="font-size:12px; color:#6C757D;
+                             margin-top:4px; font-weight:600;">
+                    Not Selected
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Applications List -->
+    <div th:if="${applications != null
+                 and !#lists.isEmpty(applications)}"
+         class="row g-4">
+
+        <div th:each="app : ${applications}" class="col-12">
+            <div class="application-card"
+                 th:classappend="${app.status.toString() == 'APPLIED'} ? 'status-applied' :
+                                  (${app.status.toString() == 'SHORTLISTED'} ? 'status-shortlisted' :
+                                  (${app.status.toString() == 'SELECTED'} ? 'status-selected' :
+                                  'status-rejected'))">
+
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+
+                        <!-- Job Info -->
+                        <div class="d-flex align-items-center
+                                    gap-3 mb-3">
+                            <div class="company-avatar"
+                                 th:text="${#strings.substring(app.job.title,0,1)}">
+                                J
+                            </div>
+                            <div>
+                                <h6 style="font-weight:800;
+                                            color:#1A1A2E; margin:0 0 3px;"
+                                    th:text="${app.job.title}">
+                                    Job Title
+                                </h6>
+                                <div style="font-size:13px;
+                                             color:#6C757D;">
+                                    <span th:text="${app.job.employer.name}">
+                                        Company
+                                    </span>
+                                    <span class="mx-2">•</span>
+                                    <i class="bi bi-geo-alt me-1"
+                                       style="color:#6C63FF;"></i>
+                                    <span th:text="${app.job.location}">
+                                        Location
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Status Timeline -->
+                        <div class="status-timeline">
+
+                            <!-- APPLIED -->
+                            <div class="timeline-step">
+                                <div class="timeline-dot completed">
+                                    <i class="bi bi-check"></i>
+                                </div>
+                                <div class="timeline-label">Applied</div>
+                            </div>
+
+                            <!-- Line 1 -->
+                            <div class="timeline-line"
+                                 th:classappend="${app.status.toString() != 'APPLIED'} ? 'active'">
+                            </div>
+
+                            <!-- SHORTLISTED -->
+                            <div class="timeline-step">
+                                <div th:if="${app.status.toString() == 'APPLIED'}"
+                                     class="timeline-dot">2</div>
+                                <div th:if="${app.status.toString() == 'SHORTLISTED'}"
+                                     class="timeline-dot current">
+                                    <i class="bi bi-star"></i>
+                                </div>
+                                <div th:if="${app.status.toString() == 'SELECTED'
+                                             or app.status.toString() == 'REJECTED'}"
+                                     class="timeline-dot completed">
+                                    <i class="bi bi-check"></i>
+                                </div>
+                                <div class="timeline-label">Shortlisted</div>
+                            </div>
+
+                            <!-- Line 2 -->
+                            <div class="timeline-line"
+                                 th:classappend="${app.status.toString() == 'SELECTED'
+                                                  or app.status.toString() == 'REJECTED'} ? 'active'">
+                            </div>
+
+                            <!-- FINAL -->
+                            <div class="timeline-step">
+                                <div th:if="${app.status.toString() == 'APPLIED'
+                                             or app.status.toString() == 'SHORTLISTED'}"
+                                     class="timeline-dot">3</div>
+                                <div th:if="${app.status.toString() == 'SELECTED'}"
+                                     class="timeline-dot success">
+                                    <i class="bi bi-trophy"></i>
+                                </div>
+                                <div th:if="${app.status.toString() == 'REJECTED'}"
+                                     class="timeline-dot danger">
+                                    <i class="bi bi-x"></i>
+                                </div>
+                                <div class="timeline-label"
+                                     th:text="${app.status.toString() == 'REJECTED'} ? 'Not Selected' : 'Selected'">
+                                    Final
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+
+                        <!-- Status Badge -->
+                        <div class="mb-2">
+                            <span th:if="${app.status.toString() == 'APPLIED'}"
+                                  class="badge-status badge-applied">
+                                <i class="bi bi-clock"></i>
+                                Under Review
+                            </span>
+                            <span th:if="${app.status.toString() == 'SHORTLISTED'}"
+                                  class="badge-status badge-shortlisted">
+                                <i class="bi bi-star-fill"></i>
+                                Shortlisted!
+                            </span>
+                            <span th:if="${app.status.toString() == 'SELECTED'}"
+                                  class="badge-status badge-selected">
+                                <i class="bi bi-trophy-fill"></i>
+                                Selected! 🎉
+                            </span>
+                            <span th:if="${app.status.toString() == 'REJECTED'}"
+                                  class="badge-status badge-rejected">
+                                <i class="bi bi-x-circle"></i>
+                                Not Selected
+                            </span>
+                        </div>
+
+                        <!-- Applied Date -->
+                        <div style="font-size:12px; color:#6C757D;">
+                            <i class="bi bi-calendar3 me-1"></i>
+                            Applied:
+                            <span th:text="${#temporals.format(
+                                             app.appliedAt,
+                                             'dd MMM yyyy')}">
+                                Date
+                            </span>
+                        </div>
+
+                        <!-- Deadline -->
+                        <div style="font-size:12px; color:#6C757D;
+                                     margin-top:4px;">
+                            <i class="bi bi-clock me-1"></i>
+                            Deadline:
+                            <span th:text="${#temporals.format(
+                                             app.job.deadline,
+                                             'dd MMM yyyy')}">
+                                Date
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div th:if="${applications == null
+                 or #lists.isEmpty(applications)}"
+         class="empty-state">
+        <div style="font-size:60px; margin-bottom:20px;">📋</div>
+        <h5 style="font-weight:800; color:#1A1A2E;
+                    margin-bottom:10px;">
+            No Applications Yet
+        </h5>
+        <p style="color:#6C757D; font-size:14px;
+                   margin-bottom:25px;">
+            You haven't applied for any jobs yet.
+            Start browsing and apply today!
+        </p>
+        <a href="/seeker/jobs"
+           style="background:#6C63FF; color:white;
+                  padding:12px 25px; border-radius:12px;
+                  font-weight:700; font-size:14px;
+                  text-decoration:none; display:inline-flex;
+                  align-items:center; gap:8px;">
+            <i class="bi bi-search"></i>
+            Browse Jobs Now
+        </a>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

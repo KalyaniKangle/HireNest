@@ -4,6 +4,7 @@ import com.hirenest.dto.JobListingRequest;
 import com.hirenest.model.JobListing;
 import com.hirenest.model.User;
 import com.hirenest.security.CustomUserDetails;
+import com.hirenest.service.ApplicationService;
 import com.hirenest.service.JobService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,11 @@ public class JobController {
 
     @Autowired
     private JobService jobService;
+
+    // ← ADDED: ApplicationService to check
+    // if seeker already applied
+    @Autowired
+    private ApplicationService applicationService;
 
     // ─── EMPLOYER CONTROLLERS ─────────────────
 
@@ -138,9 +144,19 @@ public class JobController {
             jobService.calculateMatchPercentage(
                 job, seeker);
 
+        // ← ADDED: check if seeker already
+        // applied for this job
+        boolean alreadyApplied =
+            applicationService.hasApplied(
+                seeker, jobId);
+
         model.addAttribute("job", job);
         model.addAttribute("matchPercent",
             matchPercent);
+        // ← ADDED: pass alreadyApplied to view
+        model.addAttribute("alreadyApplied",
+            alreadyApplied);
+
         return "job-detail";
     }
 
