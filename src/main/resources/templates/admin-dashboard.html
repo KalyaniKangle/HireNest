@@ -2,73 +2,467 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - HireNest</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link th:href="@{/css/hirenest.css}" rel="stylesheet">
-</head>
-<body style="background:#F8F9FF;">
+    <style>
+        body { background: #F8F9FF; font-family: 'Inter', sans-serif; }
 
-    <!-- Navbar -->
-    <nav class="hirenest-navbar">
-        <div class="container">
-            <div class="d-flex justify-content-between
-                        align-items-center">
-                <a href="/" class="hirenest-logo">
-                    Hire<span>Nest</span>
-                </a>
-                <div class="d-flex align-items-center
-                            gap-3">
-                    <span style="font-size:14px;
-                                  color:#666;">
-                        <i class="bi bi-shield-check
-                                  me-1"></i>
-                        Admin
-                    </span>
-                    <a href="/logout"
-                       class="btn btn-outline-primary
-                              btn-sm">
-                        <i class="bi bi-box-arrow-right
-                                  me-1"></i>
-                        Logout
-                    </a>
+        .sidebar {
+            background: white;
+            min-height: 100vh;
+            border-right: 1px solid #E9ECEF;
+            padding: 20px 0;
+            position: fixed;
+            width: 250px;
+            top: 0; left: 0;
+            z-index: 100;
+        }
+
+        .sidebar-logo {
+            padding: 15px 25px 25px;
+            border-bottom: 1px solid #E9ECEF;
+            margin-bottom: 15px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 25px;
+            color: #6C757D;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover {
+            background: #F0EFFE;
+            color: #6C63FF;
+            border-left-color: #6C63FF;
+        }
+
+        .sidebar-menu a.active {
+            background: #F0EFFE;
+            color: #6C63FF;
+            border-left-color: #6C63FF;
+            font-weight: 600;
+        }
+
+        .sidebar-menu a i { font-size: 18px; width: 20px; }
+
+        .main-content { margin-left: 250px; padding: 30px; }
+
+        .top-bar {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            border: 1px solid #E9ECEF;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid #E9ECEF;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(108,99,255,0.1);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .quick-action {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid #E9ECEF;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .quick-action:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(108,99,255,0.1);
+            border-color: #6C63FF;
+        }
+
+        .pending-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #E9ECEF;
+            padding: 20px 25px;
+            transition: all 0.3s;
+        }
+
+        .pending-card:hover {
+            box-shadow: 0 8px 25px rgba(108,99,255,0.1);
+        }
+
+        .btn-approve {
+            background: #E8F5E9;
+            color: #2E7D32;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-approve:hover {
+            background: #28A745;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="sidebar-logo">
+        <a href="/" class="hirenest-logo">
+            Hire<span>Nest</span>
+        </a>
+        <div class="hirenest-tagline mt-1">
+            WHERE CAREERS BEGIN
+        </div>
+    </div>
+    <div class="sidebar-menu">
+        <a href="/admin/dashboard" class="active">
+            <i class="bi bi-grid"></i>
+            Dashboard
+        </a>
+        <a href="/admin/employers">
+            <i class="bi bi-building"></i>
+            Manage Employers
+        </a>
+        <a href="/admin/seekers">
+            <i class="bi bi-people"></i>
+            Manage Seekers
+        </a>
+        <a href="/admin/jobs">
+            <i class="bi bi-briefcase"></i>
+            All Job Listings
+        </a>
+    </div>
+    <div style="position:absolute; bottom:20px;
+                width:100%; padding:0 25px;">
+        <a href="/logout"
+           style="display:flex; align-items:center;
+                  gap:10px; color:#DC3545;
+                  text-decoration:none;
+                  font-size:14px; font-weight:600;">
+            <i class="bi bi-box-arrow-right"></i>
+            Logout
+        </a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div>
+            <h4 style="font-weight:800; margin:0; color:#1A1A2E;">
+                Admin Dashboard ⚙️
+            </h4>
+            <p style="color:#6C757D; font-size:14px; margin:0;">
+                Platform overview and management
+            </p>
+        </div>
+        <div style="background:#FFEBEE; color:#C62828;
+                    padding:10px 18px; border-radius:12px;
+                    font-size:13px; font-weight:700;
+                    display:flex; align-items:center; gap:8px;"
+             th:if="${pendingEmployers > 0}">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span th:text="${pendingEmployers}">0</span>
+            Employers Pending Approval
+        </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-2 col-6">
+            <div class="stat-card">
+                <div class="stat-icon"
+                     style="background:#F0EFFE;">
+                    🎓
+                </div>
+                <div style="font-size:28px;
+                             font-weight:800;
+                             color:#1A1A2E;"
+                     th:text="${totalSeekers}">0</div>
+                <div style="font-size:13px;
+                             color:#6C757D;
+                             margin-top:4px;">
+                    Total Seekers
                 </div>
             </div>
         </div>
-    </nav>
-
-    <!-- Content -->
-    <div class="container"
-         style="padding-top:100px;">
-        <div class="text-center py-5">
-            <div style="font-size:60px;
-                         margin-bottom:20px;">
-                ⚙️
+        <div class="col-md-2 col-6">
+            <div class="stat-card">
+                <div class="stat-icon"
+                     style="background:#E8F5E9;">
+                    🏢
+                </div>
+                <div style="font-size:28px;
+                             font-weight:800;
+                             color:#1A1A2E;"
+                     th:text="${totalEmployers}">0</div>
+                <div style="font-size:13px;
+                             color:#6C757D;
+                             margin-top:4px;">
+                    Employers
+                </div>
             </div>
-            <h2 style="font-weight:800;
-                        color:#1A1A2E;">
-                Welcome Admin!
-            </h2>
-            <p style="color:#6C757D;
-                       font-size:16px;
-                       margin-top:10px;">
-                Your Admin Dashboard is
-                coming in Module 6
-            </p>
-            <div class="mt-4">
-                <span style="background:#F0EFFE;
-                              color:#6C63FF;
-                              padding:8px 20px;
-                              border-radius:20px;
-                              font-size:14px;
-                              font-weight:600;">
-                    ✅ Login Successful —
-                    JWT Authentication Working!
-                </span>
+        </div>
+        <div class="col-md-2 col-6">
+            <div class="stat-card">
+                <div class="stat-icon"
+                     style="background:#FFF8E1;">
+                    ⏳
+                </div>
+                <div style="font-size:28px;
+                             font-weight:800;
+                             color:#F57F17;"
+                     th:text="${pendingEmployers}">0</div>
+                <div style="font-size:13px;
+                             color:#6C757D;
+                             margin-top:4px;">
+                    Pending
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 col-6">
+            <div class="stat-card">
+                <div class="stat-icon"
+                     style="background:#E3F2FD;">
+                    💼
+                </div>
+                <div style="font-size:28px;
+                             font-weight:800;
+                             color:#1A1A2E;"
+                     th:text="${totalJobs}">0</div>
+                <div style="font-size:13px;
+                             color:#6C757D;
+                             margin-top:4px;">
+                    Total Jobs
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 col-6">
+            <div class="stat-card">
+                <div class="stat-icon"
+                     style="background:#E8F5E9;">
+                    ✅
+                </div>
+                <div style="font-size:28px;
+                             font-weight:800;
+                             color:#28A745;"
+                     th:text="${activeJobs}">0</div>
+                <div style="font-size:13px;
+                             color:#6C757D;
+                             margin-top:4px;">
+                    Active Jobs
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 col-6">
+            <div class="stat-card">
+                <div class="stat-icon"
+                     style="background:#FCE4EC;">
+                    📄
+                </div>
+                <div style="font-size:28px;
+                             font-weight:800;
+                             color:#1A1A2E;"
+                     th:text="${totalApplications}">0</div>
+                <div style="font-size:13px;
+                             color:#6C757D;
+                             margin-top:4px;">
+                    Applications
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- Quick Actions -->
+    <h5 style="font-weight:700; color:#1A1A2E;
+                margin-bottom:15px;">
+        Quick Actions
+    </h5>
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <a href="/admin/employers" class="quick-action">
+                <span style="font-size:36px;
+                              margin-bottom:12px;
+                              display:block;">🏢</span>
+                <div style="font-weight:700;
+                             color:#1A1A2E; font-size:14px;">
+                    Manage Employers
+                </div>
+                <div style="font-size:12px;
+                             color:#6C757D; margin-top:4px;">
+                    Approve or block employers
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="/admin/seekers" class="quick-action">
+                <span style="font-size:36px;
+                              margin-bottom:12px;
+                              display:block;">🎓</span>
+                <div style="font-weight:700;
+                             color:#1A1A2E; font-size:14px;">
+                    Manage Seekers
+                </div>
+                <div style="font-size:12px;
+                             color:#6C757D; margin-top:4px;">
+                    View and manage seekers
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="/admin/jobs" class="quick-action">
+                <span style="font-size:36px;
+                              margin-bottom:12px;
+                              display:block;">💼</span>
+                <div style="font-weight:700;
+                             color:#1A1A2E; font-size:14px;">
+                    All Job Listings
+                </div>
+                <div style="font-size:12px;
+                             color:#6C757D; margin-top:4px;">
+                    Monitor all posted jobs
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="/admin/employers?filter=pending"
+               class="quick-action"
+               style="border-color:#FFC107;">
+                <span style="font-size:36px;
+                              margin-bottom:12px;
+                              display:block;">⏳</span>
+                <div style="font-weight:700;
+                             color:#1A1A2E; font-size:14px;">
+                    Pending Approvals
+                </div>
+                <div style="font-size:12px;
+                             color:#6C757D; margin-top:4px;">
+                    <span th:text="${pendingEmployers}">0</span>
+                    employers waiting
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Pending Employers Quick List -->
+    <div th:if="${pendingList != null
+                 and !#lists.isEmpty(pendingList)}">
+        <h5 style="font-weight:700; color:#1A1A2E;
+                    margin-bottom:15px;">
+            ⏳ Pending Employer Approvals
+        </h5>
+        <div class="row g-3">
+            <div th:each="profile : ${pendingList}"
+                 class="col-12">
+                <div class="pending-card">
+                    <div class="d-flex justify-content-between
+                                align-items-center">
+                        <div class="d-flex align-items-center gap-3">
+                            <div style="width:45px; height:45px;
+                                         border-radius:12px;
+                                         background:linear-gradient(135deg,#6C63FF,#764ba2);
+                                         display:flex;
+                                         align-items:center;
+                                         justify-content:center;
+                                         color:white;
+                                         font-weight:800;
+                                         font-size:18px;"
+                                 th:text="${#strings.substring(profile.companyName,0,1)}">
+                                C
+                            </div>
+                            <div>
+                                <div style="font-weight:800;
+                                             color:#1A1A2E;"
+                                     th:text="${profile.companyName}">
+                                    Company Name
+                                </div>
+                                <div style="font-size:13px;
+                                             color:#6C757D;"
+                                     th:text="${profile.user.email}">
+                                    email
+                                </div>
+                            </div>
+                        </div>
+                        <a th:href="@{/admin/employers/approve/{id}(id=${profile.profileId})}"
+                           class="btn-approve">
+                            <i class="bi bi-check-circle"></i>
+                            Approve Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- No pending notice -->
+    <div th:if="${pendingList == null
+                 or #lists.isEmpty(pendingList)}"
+         style="background:white; border-radius:16px;
+                border:1px solid #E9ECEF; padding:25px;
+                text-align:center; margin-top:10px;">
+        <div style="font-size:40px; margin-bottom:10px;">
+            ✅
+        </div>
+        <div style="font-weight:700; color:#1A1A2E;">
+            No Pending Approvals
+        </div>
+        <div style="font-size:13px; color:#6C757D;
+                     margin-top:5px;">
+            All employer accounts have been reviewed
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

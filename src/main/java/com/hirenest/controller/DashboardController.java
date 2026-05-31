@@ -32,19 +32,20 @@ public class DashboardController {
 
         User employer = userDetails.getUser();
 
-        // Find employer profile from database
         Optional<EmployerProfile> profileOpt =
             employerProfileRepository
                 .findByUser(employer);
-
-        // If profile exists check if
-        // companyName is filled
+        
+        
+     
+        // Module 6 fix — now uses isApproved
+        // from admin approval instead of
+        // just checking companyName
         boolean profileCompleted =
             profileOpt.isPresent()
-            && profileOpt.get().getCompanyName()
-                != null
-            && !profileOpt.get().getCompanyName()
-                .trim().isEmpty();
+            && profileOpt.get().isApproved();
+        
+        
 
         model.addAttribute("profileCompleted",
             profileCompleted);
@@ -52,8 +53,6 @@ public class DashboardController {
         return "employer-dashboard";
     }
 
-    @GetMapping("/admin/dashboard")
-    public String adminDashboard() {
-        return "admin-dashboard";
-    }
+    // Admin dashboard now handled by
+    // AdminController — no mapping here
 }

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>Manage Seekers - HireNest</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link th:href="@{/css/hirenest.css}" rel="stylesheet">
+    <style>
+        body { background: #F8F9FF; font-family: 'Inter', sans-serif; }
+
+        .sidebar {
+            background: white;
+            min-height: 100vh;
+            border-right: 1px solid #E9ECEF;
+            padding: 20px 0;
+            position: fixed;
+            width: 250px;
+            top: 0; left: 0;
+            z-index: 100;
+        }
+
+        .sidebar-logo {
+            padding: 15px 25px 25px;
+            border-bottom: 1px solid #E9ECEF;
+            margin-bottom: 15px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 25px;
+            color: #6C757D;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover {
+            background: #F0EFFE;
+            color: #6C63FF;
+            border-left-color: #6C63FF;
+        }
+
+        .sidebar-menu a.active {
+            background: #F0EFFE;
+            color: #6C63FF;
+            border-left-color: #6C63FF;
+            font-weight: 600;
+        }
+
+        .sidebar-menu a i { font-size: 18px; width: 20px; }
+
+        .main-content { margin-left: 250px; padding: 30px; }
+
+        .top-bar {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            border: 1px solid #E9ECEF;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .seeker-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #E9ECEF;
+            padding: 20px 25px;
+            transition: all 0.3s;
+        }
+
+        .seeker-card:hover {
+            box-shadow: 0 8px 25px rgba(108,99,255,0.1);
+        }
+
+        .seeker-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6C63FF, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .badge-active {
+            background: #E8F5E9;
+            color: #2E7D32;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .badge-blocked {
+            background: #FFEBEE;
+            color: #C62828;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .btn-action {
+            padding: 7px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+
+        .btn-block {
+            background: #FFEBEE;
+            color: #C62828;
+        }
+
+        .btn-block:hover {
+            background: #DC3545;
+            color: white;
+        }
+
+        .btn-unblock {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+
+        .btn-unblock:hover {
+            background: #28A745;
+            color: white;
+        }
+
+        .empty-state {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #E9ECEF;
+            padding: 60px 30px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="sidebar-logo">
+        <a href="/" class="hirenest-logo">
+            Hire<span>Nest</span>
+        </a>
+        <div class="hirenest-tagline mt-1">
+            WHERE CAREERS BEGIN
+        </div>
+    </div>
+    <div class="sidebar-menu">
+        <a href="/admin/dashboard">
+            <i class="bi bi-grid"></i>
+            Dashboard
+        </a>
+        <a href="/admin/employers">
+            <i class="bi bi-building"></i>
+            Manage Employers
+        </a>
+        <a href="/admin/seekers" class="active">
+            <i class="bi bi-people"></i>
+            Manage Seekers
+        </a>
+        <a href="/admin/jobs">
+            <i class="bi bi-briefcase"></i>
+            All Job Listings
+        </a>
+    </div>
+    <div style="position:absolute; bottom:20px;
+                width:100%; padding:0 25px;">
+        <a href="/logout"
+           style="display:flex; align-items:center;
+                  gap:10px; color:#DC3545;
+                  text-decoration:none;
+                  font-size:14px; font-weight:600;">
+            <i class="bi bi-box-arrow-right"></i>
+            Logout
+        </a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div>
+            <h4 style="font-weight:800; margin:0; color:#1A1A2E;">
+                Manage Seekers
+            </h4>
+            <p style="color:#6C757D; font-size:14px; margin:0;">
+                View and manage all job seeker accounts
+            </p>
+        </div>
+        <div style="background:#F0EFFE; color:#6C63FF;
+                    padding:10px 18px; border-radius:12px;
+                    font-size:13px; font-weight:700;">
+            Total: <span th:text="${totalSeekers}">0</span> Seekers
+        </div>
+    </div>
+
+    <!-- Alerts -->
+    <div th:if="${param.blocked}"
+         class="alert alert-danger d-flex align-items-center
+                gap-2 rounded-3 mb-4" role="alert">
+        <i class="bi bi-x-circle-fill"></i>
+        Seeker blocked successfully.
+    </div>
+
+    <div th:if="${param.unblocked}"
+         class="alert alert-success d-flex align-items-center
+                gap-2 rounded-3 mb-4" role="alert">
+        <i class="bi bi-check-circle-fill"></i>
+        Seeker unblocked successfully.
+    </div>
+
+    <!-- Seekers List -->
+    <div th:if="${seekers != null
+                 and !#lists.isEmpty(seekers)}"
+         class="row g-3">
+        <div th:each="seeker : ${seekers}" class="col-12">
+            <div class="seeker-card">
+                <div class="d-flex justify-content-between
+                            align-items-center">
+
+                    <!-- Seeker Info -->
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="seeker-avatar"
+                             th:text="${#strings.substring(seeker.name,0,1)}">
+                            S
+                        </div>
+                        <div>
+                            <div style="font-weight:700;
+                                         color:#1A1A2E;"
+                                 th:text="${seeker.name}">
+                                Seeker Name
+                            </div>
+                            <div style="font-size:13px;
+                                         color:#6C757D;"
+                                 th:text="${seeker.email}">
+                                email
+                            </div>
+                            <div style="font-size:12px;
+                                         color:#6C757D;
+                                         margin-top:2px;">
+                                Joined:
+                                <span th:text="${#temporals.format(
+                                                 seeker.createdAt,
+                                                 'dd MMM yyyy')}">
+                                    Date
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status and Actions -->
+                    <div class="d-flex align-items-center gap-3">
+                        <span th:if="${seeker.active}"
+                              class="badge-active">
+                            ✅ Active
+                        </span>
+                        <span th:if="${!seeker.active}"
+                              class="badge-blocked">
+                            🚫 Blocked
+                        </span>
+
+                        <a th:if="${seeker.active}"
+                           th:href="@{/admin/seekers/block/{id}(id=${seeker.userId})}"
+                           class="btn-action btn-block"
+                           onclick="return confirm('Block this seeker?')">
+                            <i class="bi bi-slash-circle"></i>
+                            Block
+                        </a>
+
+                        <a th:if="${!seeker.active}"
+                           th:href="@{/admin/seekers/unblock/{id}(id=${seeker.userId})}"
+                           class="btn-action btn-unblock">
+                            <i class="bi bi-check2-circle"></i>
+                            Unblock
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div th:if="${seekers == null
+                 or #lists.isEmpty(seekers)}"
+         class="empty-state">
+        <div style="font-size:60px; margin-bottom:20px;">🎓</div>
+        <h5 style="font-weight:800; color:#1A1A2E;">
+            No Seekers Registered Yet
+        </h5>
+        <p style="color:#6C757D; font-size:14px;">
+            Seekers will appear here once they register
+        </p>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
