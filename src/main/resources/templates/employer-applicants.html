@@ -163,6 +163,41 @@
             transform: translateY(-1px);
         }
 
+        .btn-download {
+            background: #E8F5E9;
+            color: #2E7D32;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 12px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+
+        .btn-download:hover {
+            background: #28A745;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .btn-no-resume {
+            background: #F8F9FF;
+            color: #ADB5BD;
+            border: 1px dashed #DEE2E6;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            cursor: not-allowed;
+        }
+
         .cover-letter-box {
             background: #F8F9FF;
             border-radius: 10px;
@@ -340,7 +375,7 @@
                 <div class="row align-items-start">
 
                     <!-- Seeker Info -->
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="d-flex align-items-center
                                     gap-3 mb-2">
                             <div class="seeker-avatar"
@@ -358,7 +393,7 @@
                                 <div style="font-size:13px;
                                              color:#6C757D;"
                                      th:text="${app.seeker.email}">
-                                    email@example.com
+                                    email
                                 </div>
                             </div>
                         </div>
@@ -387,6 +422,16 @@
                                              'dd MMM yyyy')}">
                                 Date
                             </span>
+                        </div>
+
+                        <!-- ← Module 7: Resume Download Button -->
+                        <div class="mt-3">
+                            <a th:if="${app.seeker.userId != null}"
+                               th:href="@{/employer/resume/download/{id}(id=${app.seeker.userId})}"
+                               class="btn-download">
+                                <i class="bi bi-file-earmark-pdf"></i>
+                                Download Resume
+                            </a>
                         </div>
 
                         <!-- Cover Letter Toggle -->
@@ -431,7 +476,7 @@
                     </div>
 
                     <!-- Update Status -->
-                    <div class="col-md-4 mt-3 mt-md-0">
+                    <div class="col-md-5 mt-3 mt-md-0">
                         <div style="font-size:12px; color:#6C757D;
                                      margin-bottom:8px; font-weight:600;">
                             UPDATE STATUS

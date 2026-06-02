@@ -206,11 +206,11 @@
         <a href="/seeker/profile"
            class="btn btn-primary">
             <i class="bi bi-person-circle me-2"></i>
-            Complete Profile
+            My Profile
         </a>
     </div>
 
-    <!-- Stats Row -->
+    <!-- Stats Row — real data from database -->
     <div class="row g-4 mb-4">
         <div class="col-md-3">
             <div class="stat-card">
@@ -220,7 +220,8 @@
                 </div>
                 <div style="font-size:28px;
                              font-weight:800;
-                             color:#1A1A2E;">
+                             color:#1A1A2E;"
+                     th:text="${totalApplications}">
                     0
                 </div>
                 <div style="font-size:13px;
@@ -238,7 +239,8 @@
                 </div>
                 <div style="font-size:28px;
                              font-weight:800;
-                             color:#1A1A2E;">
+                             color:#1A1A2E;"
+                     th:text="${shortlisted}">
                     0
                 </div>
                 <div style="font-size:13px;
@@ -252,17 +254,18 @@
             <div class="stat-card">
                 <div class="stat-icon"
                      style="background:#FFF8E1;">
-                    👁️
+                    🏆
                 </div>
                 <div style="font-size:28px;
                              font-weight:800;
-                             color:#1A1A2E;">
+                             color:#1A1A2E;"
+                     th:text="${selected}">
                     0
                 </div>
                 <div style="font-size:13px;
                              color:#6C757D;
                              margin-top:4px;">
-                    Profile Views
+                    Selected
                 </div>
             </div>
         </div>
@@ -274,7 +277,8 @@
                 </div>
                 <div style="font-size:28px;
                              font-weight:800;
-                             color:#1A1A2E;">
+                             color:#1A1A2E;"
+                     th:text="${jobMatches}">
                     0
                 </div>
                 <div style="font-size:13px;
