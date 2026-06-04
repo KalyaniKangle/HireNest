@@ -52,10 +52,19 @@ public class DashboardController {
             applicationService.countByStatus(
                 seeker,
                 Application.Status.SELECTED);
-
+        
         long jobMatches =
-            jobService.getRecommendedJobs(seeker)
-                .size();
+        	    jobService.getRecommendedJobs(seeker)
+        	        .stream()
+        	        .filter(job ->
+        	            jobService.calculateMatchPercentage(
+        	                job, seeker) > 0)
+        	        .count();
+
+
+      //  long jobMatches =
+        //    jobService.getRecommendedJobs(seeker)
+          //      .size();
 
         model.addAttribute("totalApplications",
             totalApplications);
